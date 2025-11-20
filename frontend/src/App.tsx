@@ -1,20 +1,51 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { hide } from "./redux/visibilitySlice";
+import { show } from "./redux/visibilitySlice";
+import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
+
 import "./App.css";
 
+//console.log(Cookies.get("email")!==undefined);
 
 export default function App() {
+  const [cookies, setCookie, removeCookie] = useCookies(["email"]);
+
+  const handleSetCookie = (email) => {
+    setCookie("email", email, {
+      path: "/",
+      maxAge: 600, // 600 seconds
+    });
+  }; 
+
   const dispatch = useDispatch();
   const isVisible = useSelector((state) => state.visibility.isVisible);
-  console.log(isVisible);
   const userLogin = (e) => {
     e.preventDefault();
-    dispatch(hide());
+    if ((event.target.email.value==="vas.jonas@gmail.com" && event.target.password.value==="test")){
+        dispatch(hide());
+        handleSetCookie(event.target.email.value);
+        console.log("logged in");
+    }
+    else console.log("Wrong password");
   };
+  
+  const relog = () =>{
+      if(Cookies.get("email")!== undefined)
+          dispatch(hide());
+  }
+  
+  const logout = () => {
+      dispatch(show());
+      console.log("logged out");
+  }
+  
+  React.useEffect(() => relog(), [])
+  
   const divAttributes = isVisible ? "md:w-4/5" : "md:w-1/1";
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen" >
       {isVisible ? (
         <div className="pl-1 space-y-3 w-full md:w-1/5 p-8">
           <form onSubmit={userLogin} className="space-y-5">
@@ -75,9 +106,15 @@ export default function App() {
         <div className="pl-1 space-y-3 w-full md:w-0 p-8"></div>
         
       )}
-      {!isVisible && <a href="logout">Atsijungti</a>}
+   
+      {!isVisible && (
+  <p onClick={logout}>
+    Atsijungti
+  </p>
+)}
+
      
-      <div className={`${divAttributes} w-full bg-white text-black flex flex-col items-start justify-start p-10`}>
+      <div className={`${divAttributes} w-full bg-white text-black flex flex-col items-start justify-start`}>
         <table>
           <thead>
             <tr>

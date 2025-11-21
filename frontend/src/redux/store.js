@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import visibilityReducer from "./visibilitySlice";
+import userReducer from "./userSlice";
 
 export const store = configureStore({
   reducer: {
-    visibility: visibilityReducer,
+    userStatus: userReducer,
   },
 });

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { hide } from "./redux/visibilitySlice";
-import { show } from "./redux/visibilitySlice";
+import { logIn } from "./redux/userSlice";
+import { logOut } from "./redux/userSlice";
 import { useCookies } from "react-cookie";
 import Cookies from "js-cookie";
 
@@ -20,35 +20,35 @@ export default function App() {
   }; 
 
   const dispatch = useDispatch();
-  const isVisible = useSelector((state) => state.visibility.isVisible);
-  const userLogin = (e) => {
+  const isLoggedIn = useSelector((state) => state.userStatus.isLoggedIn);
+  const userLogIn = (e) => {
     e.preventDefault();
     if ((event.target.email.value==="vas.jonas@gmail.com" && event.target.password.value==="test")){
-        dispatch(hide());
+        dispatch(logIn());
         handleSetCookie(event.target.email.value);
         console.log("logged in");
     }
     else console.log("Wrong password");
   };
   
-  const relog = () =>{
+  const userReLog = () =>{
       if(Cookies.get("email")!== undefined)
-          dispatch(hide());
+          dispatch(logIn());
   }
   
-  const logout = () => {
-      dispatch(show());
+  const userLogOut = () => {
+      dispatch(logOut());
       console.log("logged out");
   }
   
-  React.useEffect(() => relog(), [])
+  React.useEffect(() => userReLog(), [])
   
-  const divAttributes = isVisible ? "md:w-4/5" : "md:w-1/1";
+  const divAttributes = isLoggedIn ? "md:w-1/1":"md:w-4/5";
   return (
     <div className="flex flex-col md:flex-row min-h-screen" >
-      {isVisible ? (
+      {!isLoggedIn ? (
         <div className="pl-1 space-y-3 w-full md:w-1/5 p-8">
-          <form onSubmit={userLogin} className="space-y-5">
+          <form onSubmit={userLogIn} className="space-y-5">
             <div>
               <label
                 htmlFor="email"
@@ -107,8 +107,8 @@ export default function App() {
         
       )}
    
-      {!isVisible && (
-  <p onClick={logout}>
+      {isLoggedIn && (
+  <p onClick={userLogOut}>
     Atsijungti
   </p>
 )}

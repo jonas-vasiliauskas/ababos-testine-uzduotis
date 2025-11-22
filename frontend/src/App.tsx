@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { z } from "zod";
 import { logIn } from "./redux/userSlice";
 import { logOut } from "./redux/userSlice";
 import { useCookies } from "react-cookie";
@@ -12,24 +13,47 @@ import "./App.css";
 export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["email"]);
 
+  const schema = z.object({
+      email: z.string().email(),
+  }); 
+
   const handleSetCookie = (email) => {
     setCookie("email", email, {
       path: "/",
       maxAge: 600, // 600 seconds
     });
   }; 
-
+  
+  const [logInErrorMsg, setLogInErrorMsg] = React.useState("");
+  
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.userStatus.isLoggedIn);
+  
   const userLogIn = (e) => {
-    e.preventDefault();
-    if ((event.target.email.value==="vas.jonas@gmail.com" && event.target.password.value==="test")){
-        dispatch(logIn());
-        handleSetCookie(event.target.email.value);
-        console.log("logged in");
+  e.preventDefault();
+
+  try {
+    const res = schema.parse({
+      email: e.target.email.value,
+    });
+
+    // check credentials
+    if (
+      e.target.email.value === "vas.jonas@gmail.com" &&
+      e.target.password.value === "test"
+    ) {
+      dispatch(logIn());
+      handleSetCookie(e.target.email.value);
+      setLogInErrorMsg("");
+      console.log("logged in");
+    } else {
+      throw new Error("Wrong user name or password");
     }
-    else console.log("Wrong password");
-  };
+  } catch (err) {
+    setLogInErrorMsg("Blogi prisijungimo duomenys");
+  }
+};
+  
   
   const userReLog = () =>{
       if(Cookies.get("email")!== undefined)
@@ -57,7 +81,6 @@ export default function App() {
                 Email Address
               </label>
               <input
-                type="email"
                 id="email"
                 name="email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg 
@@ -83,7 +106,7 @@ export default function App() {
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm">
+      {/*      <div className="flex items-center justify-between text-sm">
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -91,8 +114,8 @@ export default function App() {
                 />
                 Remember me
               </label>
-            </div>
-
+            </div>   */}
+            
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-lg 
@@ -100,6 +123,10 @@ export default function App() {
             >
               Log in
             </button>
+            <div>
+               {/* {`${divAttributes} bg-white text-black flex flex-col items-start justify-start`}*/}
+                <p id="login_form_error_msg">{`${logInErrorMsg}`}</p>
+            </div>
           </form>
         </div>
       ) : (
@@ -116,7 +143,7 @@ export default function App() {
      
       <div className={`${divAttributes} bg-white text-black flex flex-col items-start justify-start`}>
         <table class='border-1'>
-          <thead class='border-1'>
+          <thead class="border-1">
             <tr>
               <th scope="col" class="border-1">Režisierius</th>
               <th scope="col" class="border-1">Pavadinimas orginalo kalba</th>

@@ -70,7 +70,6 @@ export default function App() {
   const sortBy = (key: string) => {
     let direction: "asc" | "desc" = "asc";
 
-    // If already sorted by this key → flip direction
     if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }
@@ -79,22 +78,19 @@ export default function App() {
       const aVal = a[key];
       const bVal = b[key];
 
-      // String sorting
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        return direction === "asc"
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
-      }
+      if (isLoggedIn){
+          if (typeof aVal === "string" && typeof bVal === "string") {
+              return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+          }
 
-      // Number sorting
-      if (typeof aVal === "number" && typeof bVal === "number") {
-        return direction === "asc" ? aVal - bVal : bVal - aVal;
+          if (typeof aVal === "number" && typeof bVal === "number") {
+              return direction === "asc" ? aVal - bVal : bVal - aVal;
+          }
       }
-
+      else alert("Reikia prisijungti");
       return 0;
     });
 
-    // Update state
     setMovies(sorted);
     setSortConfig({ key, direction });
   };

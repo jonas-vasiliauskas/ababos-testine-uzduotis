@@ -24,16 +24,13 @@ export default function App() {
 
   const [logInErrorMsg, setLogInErrorMsg] = React.useState("");
 
-  // Movies state
   const [movies, setMovies] = React.useState(movieArray);
 
-  // Store sorting direction per column
   const [sortConfig, setSortConfig] = React.useState<{
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
 
-  // NEW: inline error when sorting while logged out
   const [sortError, setSortError] = React.useState("");
 
   const dispatch = useDispatch();
@@ -54,7 +51,7 @@ export default function App() {
         dispatch(logIn());
         handleSetCookie(e.target.email.value);
         setLogInErrorMsg("");
-        setSortError(""); // clear sorting error after login
+        setSortError(""); 
       } else {
         throw new Error("Wrong login");
       }
@@ -78,13 +75,12 @@ export default function App() {
       direction = "desc";
     }
 
-    // If not logged in → show UI warning instead of alert()
+    
     if (!isLoggedIn) {
       setSortError("Reikia prisijungti");
       return;
     }
 
-    // Clear previous error
     setSortError("");
 
     const sorted = [...movies].sort((a: any, b: any) => {

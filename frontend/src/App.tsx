@@ -33,6 +33,9 @@ export default function App() {
     direction: "asc" | "desc";
   } | null>(null);
 
+  // NEW: inline error when sorting while logged out
+  const [sortError, setSortError] = React.useState("");
+
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: any) => state.userStatus.isLoggedIn);
 
@@ -51,6 +54,7 @@ export default function App() {
         dispatch(logIn());
         handleSetCookie(e.target.email.value);
         setLogInErrorMsg("");
+        setSortError(""); // clear sorting error after login
       } else {
         throw new Error("Wrong login");
       }
@@ -74,20 +78,27 @@ export default function App() {
       direction = "desc";
     }
 
+    // If not logged in → show UI warning instead of alert()
+    if (!isLoggedIn) {
+      setSortError("Reikia prisijungti");
+      return;
+    }
+
+    // Clear previous error
+    setSortError("");
+
     const sorted = [...movies].sort((a: any, b: any) => {
       const aVal = a[key];
       const bVal = b[key];
 
-      if (isLoggedIn){
-          if (typeof aVal === "string" && typeof bVal === "string") {
-              return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-          }
-
-          if (typeof aVal === "number" && typeof bVal === "number") {
-              return direction === "asc" ? aVal - bVal : bVal - aVal;
-          }
+      if (typeof aVal === "string" && typeof bVal === "string") {
+        return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
-      else alert("Reikia prisijungti");
+
+      if (typeof aVal === "number" && typeof bVal === "number") {
+        return direction === "asc" ? aVal - bVal : bVal - aVal;
+      }
+
       return 0;
     });
 
@@ -155,6 +166,12 @@ export default function App() {
         <p className="flex justify-center mb-3">
             Mėgstamiausių filmų sąrašas
         </p>
+
+        {/* Sorting error message */}
+        {sortError && (
+          <p className="text-red-600 text-center mb-2">{sortError}</p>
+        )}
+
         <table className="border-1">
           <thead className="border-1">
             <tr>
@@ -170,9 +187,7 @@ export default function App() {
               <th className="border-1 cursor-pointer" onClick={() => sortBy("gendre")}>
                 Žanras
               </th>
-              <th className="border-1">
-                Aktoriai
-              </th>
+              <th className="border-1">Aktoriai</th>
               <th className="border-1 cursor-pointer" onClick={() => sortBy("description")}>
                 Aprašymas
               </th>

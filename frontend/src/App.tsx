@@ -57,6 +57,9 @@ export default function App() {
       }
     } catch (err) {
       setLogInErrorMsg("Blogi prisijungimo duomenys");
+      setInterval(() => {
+          setLogInErrorMsg("");
+      }, 5000);
     }
   };
 
@@ -75,9 +78,11 @@ export default function App() {
       direction = "desc";
     }
 
-    
     if (!isLoggedIn) {
       setSortError("Reikia prisijungti");
+      setInterval(() => {
+          setSortError("");
+      }, 5000);
       return;
     }
 
@@ -137,6 +142,7 @@ export default function App() {
               />
             </div>
 
+           <p className="login_form_error_msg text-red-600">{logInErrorMsg}</p> 
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-lg 
@@ -145,7 +151,7 @@ export default function App() {
               Prisijungti
             </button>
 
-            <p id="login_form_error_msg">{logInErrorMsg}</p>
+            
           </form>
         </div>
       ) : (
@@ -163,7 +169,6 @@ export default function App() {
             Mėgstamiausių filmų sąrašas
         </p>
 
-        {/* Sorting error message */}
         {sortError && (
           <p className="text-red-600 text-center mb-2">{sortError}</p>
         )}

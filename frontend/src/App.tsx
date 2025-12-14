@@ -5,6 +5,7 @@ import { logIn, logOut } from "./redux/userSlice";
 import { useCookies } from "react-cookie";
 import { movieArray } from "./data/movieArray";
 import Cookies from "js-cookie";
+import axios from 'axios';
 
 import "./App.css";
 
@@ -30,6 +31,12 @@ export default function App() {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
+  
+   React.useEffect(() => {
+   axios.get('/api/users')
+      .then(response => findAll(response.data))
+      .catch(error => console.error('Error fetching tasks:', error));
+  }, []);
 
   const [sortError, setSortError] = React.useState("");
 

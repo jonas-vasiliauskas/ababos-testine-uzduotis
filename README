@@ -4,11 +4,11 @@ node.js versija v24.11.0
 
 naudotos technologijos node.js, nest.js, Nginx, redux, TailWind CSS
 
-norint paleisti reikia įvykdyti ./deploy.sh
+norint paleisti reikia pirmiausiai įvykdyti ./deploy.sh, o  paskui atskirame terminale - ./send-data.sh
 projekto adresas http://localhost/
 
 yra galimybė prisijungti: 
-(prisijungimo duomenys el. paštas: test@gmail.com, slaptažodis test)
+(prisijungimo duomenys el. paštas: test@test.com, slaptažodis test)
 
 paspaudus ant viršutinės eilutės pagal jį išrykiuojama lentelė (reikia prisijungti).
  

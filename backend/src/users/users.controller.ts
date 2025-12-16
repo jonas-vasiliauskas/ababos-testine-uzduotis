@@ -31,11 +31,14 @@ export class UsersController {
       return this.usersService.login(loginDto.email, loginDto.password);
   }
 
-  @Post(':email/logout')
+  /*@Post(':email/logout')
   logout(@Param('email') email: string): User {
     return this.usersService.logout(email);
-  }
+  }*/
 
- 
+  @Post('logout')
+  logout(@Body('email') email: string): User {
+      return this.usersService.logout(email);
+  }
 }
 

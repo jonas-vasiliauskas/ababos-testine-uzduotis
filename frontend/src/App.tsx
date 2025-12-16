@@ -73,7 +73,16 @@ export default function App() {
 
   const userLogOut = () => {
       dispatch(logOut());
- //     axios.post("/api/users/logout", {email: Cookies.get("email")});
+      axios.post("/api/users/logout", { email: Cookies.get("email") })
+  .then(response => {
+    console.log("Logged out successfully:", response.data);
+    // Optionally remove cookies on the client
+    Cookies.remove("email");
+  })
+  .catch(error => {
+    console.error("Logout failed:", error);
+  });
+
   };
   
   

@@ -7,7 +7,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './user.model';
+import { User,LoginDto } from './user.model';
 
 @Controller('users')
 export class UsersController {
@@ -20,30 +20,22 @@ export class UsersController {
   ): User {
     return this.usersService.create(email, password);
   }
-
+   
   @Get()
   findAll(): User[] {
     return this.usersService.findAll();
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): User {
-    return this.usersService.findById(id);
+  
+  @Post('login')
+  login(@Body() loginDto: LoginDto): User {
+      return this.usersService.login(loginDto.email, loginDto.password);
   }
 
-  @Post(':id/login')
-  login(@Param('id') id: string): User {
-    return this.usersService.login(id);
+  @Post(':email/logout')
+  logout(@Param('email') email: string): User {
+    return this.usersService.logout(email);
   }
 
-  @Post(':id/logout')
-  logout(@Param('id') id: string): User {
-    return this.usersService.logout(id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string): void {
-    return this.usersService.remove(id);
-  }
+ 
 }
 

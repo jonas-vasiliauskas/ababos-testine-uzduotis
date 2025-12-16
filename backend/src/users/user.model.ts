@@ -4,3 +4,8 @@ export class User {
     password: string;
     isLoggedIn: boolean;
 }
+
+export class LoginDto {
+  email: string;
+  password: string;
+}

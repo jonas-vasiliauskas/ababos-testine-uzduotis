@@ -31,53 +31,52 @@ export default function App() {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-  
-   React.useEffect(() => {
-   axios.get('/api/users')
-      .then(response => findAll(response.data))
-      .catch(error => console.error('Error fetching tasks:', error));
-  }, []);
 
   const [sortError, setSortError] = React.useState("");
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: any) => state.userStatus.isLoggedIn);
 
+  const userReLog = () => {
+      if (Cookies.get("email") !== undefined) dispatch(logIn());
+  };
+  
   const userLogIn = (e: any) => {
-    e.preventDefault();
-
-    try {
+      e.preventDefault();
+    
+      try{
       schema.parse({
         email: e.target.email.value,
       });
-
-      if (
-        e.target.email.value === "test@gmail.com" &&
-        e.target.password.value === "test"
-      ) {
-        dispatch(logIn());
-        handleSetCookie(e.target.email.value);
-        setLogInErrorMsg("");
-        setSortError(""); 
-      } else {
-        throw new Error("Wrong login");
-      }
-    } catch (err) {
-      setLogInErrorMsg("Blogi prisijungimo duomenys");
-      setInterval(() => {
+    
+      axios.post("/api/users/login", {email: e.target.email.value, password: e.target.password.value,})
+      .then((response) => {
+          dispatch(logIn());
+          handleSetCookie(e.target.email.value);
           setLogInErrorMsg("");
-      }, 5000);
-    }
-  };
-
-  const userReLog = () => {
-    if (Cookies.get("email") !== undefined) dispatch(logIn());
+          setSortError(""); 
+      })
+      .catch((error) => {
+          setLogInErrorMsg("Blogi prisijungimo duomenys");
+          setInterval(() => {
+              setLogInErrorMsg("");
+          }, 5000);
+      });
+      }
+      catch (error){
+          setLogInErrorMsg("Neteisingas el. pašto adresas");
+          setInterval(() => {
+              setLogInErrorMsg("");
+          }, 5000);
+      }
   };
 
   const userLogOut = () => {
-    dispatch(logOut());
+      dispatch(logOut());
+ //     axios.post("/api/users/logout", {email: Cookies.get("email")});
   };
-
+  
+  
   const sortBy = (key: string) => {
     let direction: "asc" | "desc" = "asc";
 

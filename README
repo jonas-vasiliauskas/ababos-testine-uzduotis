@@ -4,7 +4,7 @@ node.js versija v24.11.0
 
 naudotos technologijos node.js, nest.js, Nginx, redux, TailWind CSS
 
-norint paleisti reikia pirmiausiai įvykdyti ./deploy.sh, o  paskui atskirame terminale - ./send-data.sh
+norint paleisti reikia pirmiausiai įvykdyti ./deploy.sh, o  paskui (serveriui pasileidus) atskirame terminale - ./send-data.sh
 projekto adresas http://localhost/
 
 yra galimybė prisijungti: 

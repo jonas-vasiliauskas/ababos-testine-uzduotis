@@ -10,35 +10,36 @@ import axios from 'axios';
 import "./App.css";
 
 export default function App() {
-  const [cookies, setCookie] = useCookies(["email"]);
+    const [cookies, setCookie] = useCookies(["email"]);
 
-  const schema = z.object({
-    email: z.string().email(),
-  });
-
-  const handleSetCookie = (email: string) => {
-    setCookie("email", email, {
-      path: "/",
-      maxAge: 600,
+    const schema = z.object({
+        email: z.string().email(),
     });
-  };
 
-  const [logInErrorMsg, setLogInErrorMsg] = React.useState("");
+    const handleSetCookie = (email: string) => {
+        setCookie("email", email, {
+        path: "/",
+        maxAge: 600,
+    });
+    };
 
-  const [movies, setMovies] = React.useState(movieArray);
+    const [logInErrorMsg, setLogInErrorMsg] = React.useState("");
 
-  const [sortConfig, setSortConfig] = React.useState<{
-    key: string;
-    direction: "asc" | "desc";
-  } | null>(null);
+    const [movies, setMovies] = React.useState(movieArray);
 
-  const [sortError, setSortError] = React.useState("");
+    const [sortConfig, setSortConfig] = React.useState<{
+        key: string;
+        direction: "asc" | "desc";
+    } | null>(null);
 
-  const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state: any) => state.userStatus.isLoggedIn);
+    const [sortError, setSortError] = React.useState("");
 
-  const userReLog = () => {
-      if (Cookies.get("email") !== undefined) dispatch(logIn());
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state: any) => state.userStatus.isLoggedIn);
+
+    const userReLog = () => {
+       if (Cookies.get("email") !== undefined) 
+           dispatch(logIn());
   };
   
   const userLogIn = (e: any) => {
@@ -73,58 +74,52 @@ export default function App() {
 
   const userLogOut = () => {
       dispatch(logOut());
-      axios.post("/api/users/logout", { email: Cookies.get("email") })
-  .then(response => {
-    console.log("Logged out successfully:", response.data);
-    // Optionally remove cookies on the client
-    Cookies.remove("email");
-  })
-  .catch(error => {
-    console.error("Logout failed:", error);
-  });
+      axios.post("/api/users/logout", { email: Cookies.get("email") }).then(response => {
+          console.log("Logged out successfully:", response.data);
+      Cookies.remove("email");
+      }).catch(error => {
+          console.error("Logout failed:", error);
+      });
 
   };
   
   
-  const sortBy = (key: string) => {
-    let direction: "asc" | "desc" = "asc";
+    const sortBy = (key: string) => {
+        let direction: "asc" | "desc" = "asc";
 
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") 
+            direction = "desc";
 
-    if (!isLoggedIn) {
-      setSortError("Reikia prisijungti");
-      setInterval(() => {
-          setSortError("");
-      }, 5000);
-      return;
+        if (!isLoggedIn) {
+            setSortError("Reikia prisijungti");
+            setInterval(() => {
+                setSortError("");
+            }, 5000);
+        return;
     }
 
     setSortError("");
 
     const sorted = [...movies].sort((a: any, b: any) => {
-      const aVal = a[key];
-      const bVal = b[key];
+        const aVal = a[key];
+        const bVal = b[key];
 
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-      }
-
-      if (typeof aVal === "number" && typeof bVal === "number") {
-        return direction === "asc" ? aVal - bVal : bVal - aVal;
-      }
-
-      return 0;
+        if (typeof aVal === "string" && typeof bVal === "string") 
+            return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      
+        if (typeof aVal === "number" && typeof bVal === "number") 
+            return direction === "asc" ? aVal - bVal : bVal - aVal;
+    
+        return 0;
     });
 
-    setMovies(sorted);
-    setSortConfig({ key, direction });
-  };
+        setMovies(sorted);
+        setSortConfig({ key, direction });
+    };
 
-  React.useEffect(() => userReLog(), []);
+    React.useEffect(() => userReLog(), []);
 
-  const divAttributes = isLoggedIn ? "md:w-1/1" : "md:w-4/5";
+    const divAttributes = isLoggedIn ? "md:w-1/1" : "md:w-4/5";
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">

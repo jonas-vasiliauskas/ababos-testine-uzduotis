@@ -59,16 +59,12 @@ export default function App() {
       })
       .catch((error) => {
           setLogInErrorMsg("Blogi prisijungimo duomenys");
-          setInterval(() => {
-              setLogInErrorMsg("");
-          }, 5000);
+          setTimeout(() => {setLogInErrorMsg("")}, 5000);
       });
       }
       catch (error){
           setLogInErrorMsg("Neteisingas el. pašto adresas");
-          setInterval(() => {
-              setLogInErrorMsg("");
-          }, 5000);
+          setTimeout(() => {setLogInErrorMsg("")}, 5000);
       }
   };
 
@@ -84,17 +80,15 @@ export default function App() {
   };
   
   
-    const sortBy = (key: string) => {
-        let direction: "asc" | "desc" = "asc";
+   const sortBy = (key: string) => {
+       let direction: "asc" | "desc" = "asc";
 
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") 
-            direction = "desc";
+       if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") 
+           direction = "desc";
 
-        if (!isLoggedIn) {
-            setSortError("Reikia prisijungti");
-            setInterval(() => {
-                setSortError("");
-            }, 5000);
+       if (!isLoggedIn) {
+           setSortError("Reikia prisijungti");
+           setTimeout(() => {setSortError("")}, 5000);
         return;
     }
 
